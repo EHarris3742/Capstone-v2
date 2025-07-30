@@ -1,21 +1,27 @@
+import React, { useEffect, useState } from "react";
 import GameCard from "../components/GameCard";
-import "../styles/Home.css";
-import { useEffect, useState } from "react";
 
-function Home() {
+export default function Home() {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/games") 
-      .then((res) => res.json())
-      .then((data) => setGames(data))
-      .catch((err) => console.error("Failed to fetch games:", err));
+    const fetchGames = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/games");
+        const data = await response.json();
+        setGames(data);
+      } catch (err) {
+        console.error("Failed to fetch games:", err);
+      }
+    };
+
+    fetchGames();
   }, []);
 
   return (
-    <div>
-      <h1>All Games</h1>
-      <div className="game-grid">
+    <div className="game-list">
+      <h1>Game Closet</h1>
+      <div className="card-container">
         {games.map((game) => (
           <GameCard key={game.id} game={game} />
         ))}
@@ -23,6 +29,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
-

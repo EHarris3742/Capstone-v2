@@ -1,27 +1,37 @@
 const express = require("express");
 const app = express();
-
 const cors = require("cors");
+const eazy = require("morgan"); // ✅ aliasing morgan as "eazy"
+
+const { client, seed } = require("./db");
 const gamesRouter = require("./routes/games");
+const usersRouter = require('./routes/users');
 
-const init = () => {
-  const PORT = 3001;
+app.use(eazy("dev")); // ✅ use it like morgan, but called "eazy"
 
-  app.use(cors());
-  app.use(express.json());
+app.use(express.json());
+app.use(cors());
+app.use('/api/users', usersRouter);
+app.get("/", (req, res) => {
+  res.send("Welcome to the Game Closet API!");
+});
 
-  // Health check route
-  app.get("/", (req, res) => {
-    res.send("✅ API is running");
-  });
+app.use("/api/games", gamesRouter);
 
-  // Use /games routes
-  app.use("/games", gamesRouter);
+const init = async () => {
+  try {
+    await client.connect();
+    console.log("🗄️  Connected to database");
 
-  // Start server
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  });
+    await seed();
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🎧 Eazy API running on port ${PORT} 🎮🔥`);
+    });
+  } catch (err) {
+    console.error("❌ Initialization error:", err);
+  }
 };
 
 init();

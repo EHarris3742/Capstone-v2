@@ -1,47 +1,80 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const { client } = require("../db");
 
 // GET all games
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const result = await pool.query("SELECT * FROM games;");
-    res.json(result.rows);
+    const response = await client.query(`SELECT * FROM games;`);
+    res.send(response.rows);
   } catch (err) {
-    console.error("Fetch error:", err.message);
-    res.status(500).send("Failed to fetch games.");
+    next(err);
   }
 });
 
-// SEED route
-router.get("/seed", async (req, res) => {
+// GET one game
+router.get("/:id", async (req, res, next) => {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS games (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        genre TEXT NOT NULL,
-        rating TEXT NOT NULL,
-        platform TEXT NOT NULL,
-        image_url TEXT
-      );
-    `);
-
-    await pool.query("DELETE FROM games;");
-
-    await pool.query(`
-      INSERT INTO games (name, genre, rating, platform, image_url) VALUES
-        ('Call of Duty', 'FPS', 'M', 'Multi-Platform', 'https://upload.wikimedia.org/wikipedia/en/6/65/Call_of_Duty_Modern_Warfare_II_cover.jpg'),
-        ('Zelda: Tears of the Kingdom', 'Adventure', 'E10+', 'Nintendo Switch', 'https://upload.wikimedia.org/wikipedia/en/a/a9/The_Legend_of_Zelda_Tears_of_the_Kingdom.jpg'),
-        ('God of War: Ragnarok', 'Action', 'M', 'PlayStation', 'https://upload.wikimedia.org/wikipedia/en/b/bb/God_of_War_Ragnar%C3%B6k_cover.jpg'),
-        ('Minecraft', 'Sandbox', 'E10+', 'Multi-Platform', 'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png'),
-        ('Halo Infinite', 'FPS', 'T', 'Xbox', 'https://upload.wikimedia.org/wikipedia/en/e/e0/Halo_Infinite.png');
-    `);
-
-    res.send("✅ Games seeded successfully!");
+    const response = await client.query(`SELECT * FROM games WHERE id = $1;`, [req.params.id]);
+    res.send(response.rows[0]);
   } catch (err) {
-    console.error("Seed error:", err.message);
-    res.status(500).send("Seeding failed.");
+    next(err);
+  }
+});
+
+// POST new game
+router.post("/", async (req, res, next) => {
+  try {
+    const { name, genre, rating, platform, image_url } = req.body;
+    const SQL = `
+      INSERT INTO games (name, genre, rating, platform, image_url)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+    const response = await client.query(SQL, [name, genre, rating, platform, image_url]);
+    res.send(response.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE game
+router.delete("/:id", async (req, res, next) => {
+  try {
+    await client.query(`DELETE FROM games WHERE id = $1;`, [req.params.id]);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PUT full update
+router.put("/:id", async (req, res, next) => {
+  try {
+    const { name, genre, rating, platform, image_url } = req.body;
+    const SQL = `
+      UPDATE games
+      SET name = $1, genre = $2, rating = $3, platform = $4, image_url = $5
+      WHERE id = $6
+      RETURNING *;
+    `;
+    const response = await client.query(SQL, [name, genre, rating, platform, image_url, req.params.id]);
+    res.send(response.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH update rating
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const response = await client.query(
+      `UPDATE games SET rating = $1 WHERE id = $2 RETURNING *;`,
+      [req.body.rating, req.params.id]
+    );
+    res.send(response.rows[0]);
+  } catch (err) {
+    next(err);
   }
 });
 
