@@ -7,7 +7,7 @@ module.exports = async function requireUser(req, res, next) {
       return res.status(401).send({ error: "Missing or invalid token" });
     }
     const token = auth.slice(7);
-    const user = await findUserByToken(token); // { id, username, is_admin }
+    const user = await findUserByToken(token); 
     req.user = user;
     next();
   } catch (err) {

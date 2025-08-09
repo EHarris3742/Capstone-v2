@@ -6,8 +6,8 @@ export default function GameCard({
   game,
   showAddButtons = true,
   showRemove = false,
-  removeType,                 
-  onRemove,                   
+  removeType,          
+  onRemove,
 }) {
   const { token } = useContext(AuthContext);
   const [busy, setBusy] = useState(false);
@@ -43,14 +43,15 @@ export default function GameCard({
         throw new Error(msg || "Request failed");
       }
 
+      
       const data = await res.json().catch(() => ({}));
       const added = data.added ?? true;
 
       if (type === "wishlist") setWishAdded(true);
       if (type === "collection") setCollAdded(true);
 
-      if (added) {
-        
+      if (!added) {
+     
       }
     } catch (err) {
       console.error(err);
@@ -61,7 +62,9 @@ export default function GameCard({
   };
 
   const imgSrc =
-    game.image_url || "https://via.placeholder.com/300x400?text=No+Cover";
+  game.image_url ||
+  "https://images.unsplash.com/photo-1585079542156-2755d9c7bba1?q=80&w=400&h=500&fit=crop";
+
 
   return (
     <div className="game-card">
@@ -71,22 +74,27 @@ export default function GameCard({
       <p><strong>Rating:</strong> {game.rating}</p>
       <p><strong>Platform:</strong> {game.platform}</p>
 
-      <div className="actions">
+      <div className="button-group">
         {showAddButtons && (
           <>
             <button
-              onClick={() => handleAdd("wishlist")}
-              disabled={busy || wishAdded}
-              className={`btn ${wishAdded ? "btn-disabled" : ""}`}
-            >
-              {wishAdded ? "In Wishlist ✓" : "Add to Wishlist"}
-            </button>
-            <button
               onClick={() => handleAdd("collection")}
               disabled={busy || collAdded}
-              className={`btn ${collAdded ? "btn-disabled" : ""}`}
+              className={`button-blue${collAdded ? " btn-disabled" : ""}`}
+              aria-disabled={busy || collAdded}
+              title={collAdded ? "Already in Collection" : "Add to Collection"}
             >
               {collAdded ? "In Collection ✓" : "Add to Collection"}
+            </button>
+
+            <button
+              onClick={() => handleAdd("wishlist")}
+              disabled={busy || wishAdded}
+              className={`button-green${wishAdded ? " btn-disabled" : ""}`}
+              aria-disabled={busy || wishAdded}
+              title={wishAdded ? "Already in Wishlist" : "Add to Wishlist"}
+            >
+              {wishAdded ? "In Wishlist ✓" : "Add to Wishlist"}
             </button>
           </>
         )}
@@ -94,8 +102,8 @@ export default function GameCard({
         {showRemove && (
           <button
             onClick={onRemove}
-            className="btn btn-danger"
             disabled={busy}
+            className="button-red"
             title={`Remove from ${removeType || "list"}`}
           >
             Remove{removeType ? ` from ${removeType}` : ""}

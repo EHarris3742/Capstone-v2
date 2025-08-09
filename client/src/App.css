@@ -1,9 +1,13 @@
+
 #root {
+  position: relative;
+  z-index: 1;         
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
+
 
 .logo {
   height: 6em;
@@ -11,32 +15,55 @@
   will-change: filter;
   transition: filter 300ms;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+.logo:hover { filter: drop-shadow(0 0 2em #646cffaa); }
+.logo.react:hover { filter: drop-shadow(0 0 2em #61dafbaa); }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  a:nth-of-type(2) .logo { animation: logo-spin infinite 20s linear; }
 }
 
-.card {
-  padding: 2em;
+
+.card { padding: 2em; }
+.read-the-docs { color: #cbd5e1; }
+
+
+.button-blue {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+}
+.button-blue:hover { background: #1d4ed8; }
+
+.button-green {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+}
+.button-green:hover { background: #15803d; }
+
+.button-red {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+}
+.button-red:hover { background: #b91c1c; }
+
+.btn-disabled,
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
-.read-the-docs {
-  color: #888;
+
+.card-container {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: stretch;
 }

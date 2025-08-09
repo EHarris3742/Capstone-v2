@@ -1,7 +1,9 @@
+
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import GameCard from "../components/GameCard";
+import "../styles/Account.css"; 
 
 export default function Account() {
   const { token, user, loadingUser } = useContext(AuthContext);
@@ -27,10 +29,9 @@ export default function Account() {
         authedFetch("http://localhost:3000/api/wishlist"),
         authedFetch("http://localhost:3000/api/collection"),
       ]);
-      if (!wRes.ok || !cRes.ok) throw new Error("Failed to load lists");
       const [wData, cData] = await Promise.all([wRes.json(), cRes.json()]);
-      setWishlist(wData);
-      setCollection(cData);
+      setWishlist(wData || []);
+      setCollection(cData || []);
     } catch (e) {
       console.error(e);
       setWishlist([]);
@@ -52,33 +53,36 @@ export default function Account() {
           : `http://localhost:3000/api/collection/${gameId}`;
       const res = await authedFetch(url, { method: "DELETE" });
       if (!res.ok && res.status !== 204) throw new Error("Delete failed");
-      if (type === "wishlist") {
-        setWishlist(prev => prev.filter(g => g.id !== gameId));
-      } else {
-        setCollection(prev => prev.filter(g => g.id !== gameId));
-      }
+      if (type === "wishlist") setWishlist(prev => prev.filter(g => g.id !== gameId));
+      else setCollection(prev => prev.filter(g => g.id !== gameId));
     } catch (e) {
       console.error(e);
       alert("Could not remove item.");
     }
   };
 
-  if (loadingUser) return <p>Loading your account…</p>;
+  if (loadingUser) return <p className="account-loading">Loading your account…</p>;
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="account">
-      <h1>Welcome, {user.username}!</h1>
+    <main className="account">
+      <header className="account-top">
+        <h1>Welcome, {user.username}!</h1>
+        <p className="account-subtitle">Your collection and wishlist in one place.</p>
+      </header>
 
-      <section>
-        <h2>Your Collection</h2>
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Your Collection</h2>
+          {!loading && <span className="count-badge">{collection.length}</span>}
+        </div>
         {loading ? (
-          <p>Loading collection…</p>
+          <p className="muted">Loading collection…</p>
         ) : collection.length === 0 ? (
-          <p>No games in your collection yet.</p>
+          <p className="muted">No games in your collection yet.</p>
         ) : (
-          <div className="card-container">
-            {collection.map(game => (
+          <div className="card-grid">
+            {collection.map((game) => (
               <GameCard
                 key={game.id}
                 game={game}
@@ -92,15 +96,18 @@ export default function Account() {
         )}
       </section>
 
-      <section>
-        <h2>Your Wishlist</h2>
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Your Wishlist</h2>
+          {!loading && <span className="count-badge">{wishlist.length}</span>}
+        </div>
         {loading ? (
-          <p>Loading wishlist…</p>
+          <p className="muted">Loading wishlist…</p>
         ) : wishlist.length === 0 ? (
-          <p>No games in your wishlist yet.</p>
+          <p className="muted">No games in your wishlist yet.</p>
         ) : (
-          <div className="card-container">
-            {wishlist.map(game => (
+          <div className="card-grid">
+            {wishlist.map((game) => (
               <GameCard
                 key={game.id}
                 game={game}
@@ -113,6 +120,6 @@ export default function Account() {
           </div>
         )}
       </section>
-    </div>
+    </main>
   );
 }

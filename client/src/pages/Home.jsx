@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <main className="home">
-      <header className="home-hero">
+      <header className="home-top">
         <h1>Welcome to your Arcade Archive!</h1>
         <p className="subtitle">Your curated shelf of favorites, classics, and hidden gems.</p>
       </header>

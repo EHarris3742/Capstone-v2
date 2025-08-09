@@ -3,11 +3,11 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Database client setup
+
 const { client } = require('./index');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'eazy_secret';
-// 🔐 Create new user
+// Create new user
 const createUser = async (user) => {
   if (!user.username.trim() || !user.password.trim()) {
     throw Error('Must provide username and password');
@@ -32,7 +32,7 @@ const createUser = async (user) => {
   return response.rows[0];
 };
 
-// 🔐 Authenticate login
+// Authenticate login
 const authenticate = async ({ username, password }) => {
   const SQL = `
     SELECT id, password
@@ -60,7 +60,7 @@ const authenticate = async ({ username, password }) => {
   return { token };
 };
 
-// 🔐 Get user from JWT token
+// Get user from JWT token
 const findUserByToken = async (token) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);

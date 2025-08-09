@@ -1,59 +1,68 @@
-.navbar {
-  position: fixed;          /* Keep it at the top */
-  top: 0;                   /* Stick to top */
-  left: 0;
-  width: 100%;              /* Full width */
-  background-color: black;
-  padding: 1rem 2rem;
-  color: white;
-  z-index: 1000;            /* Make sure it stays on top */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700&display=swap');
 
-.nav-container {
+.navbar {
+  background: #111827; 
+  padding: 12px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  font-family: 'Nunito', sans-serif;
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: #facc15; 
   text-decoration: none;
+  letter-spacing: 1px;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 12px;
   margin: 0;
   padding: 0;
 }
 
-.nav-links li a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+.nav-links li {
+  display: flex;
 }
 
-.nav-links li a:hover {
-  color: #f76c6c;
-}
-
-.logout-button {
-  background: none;
+.nav-button {
+  padding: 8px 14px;
   border: none;
-  color: inherit;
-  font: inherit;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
+  text-decoration: none;
+  color: white;
+  transition: background 0.2s, transform 0.15s;
 }
 
-.logout-button:hover {
-  color: #f76c6c; /* or whatever your hover color is */
+
+.nav-button.blue {
+  background: #2563eb;
+}
+.nav-button.blue:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.nav-button.green {
+  background: #16a34a;
+}
+.nav-button.green:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+
+.nav-button.red {
+  background: #dc2626;
+}
+.nav-button.red:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
 }

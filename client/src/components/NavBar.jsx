@@ -4,33 +4,31 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const NavBar = () => {
-  const { token, user, logout } = useContext(AuthContext);
+  const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate("/"); 
+    navigate("/");
   };
 
   return (
     <nav className="navbar">
-      <div className="nav-container">
-        <Link to="/" className="logo">The Closet</Link>
-        <ul className="nav-links">
-          <li><Link to="/">Home</Link></li>
-          {token && (
-            <li><Link to="/account">Account</Link></li>
-          )}
-          {!token ? (
-            <>
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/register">Register</Link></li>
-            </>
-          ) : (
-            <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
-          )}
-        </ul>
-      </div>
+      <Link to="/" className="logo">Arcade Archive</Link>
+      <ul className="nav-links">
+        <li><Link to="/" className="nav-button blue">Home</Link></li>
+        {token && (
+          <li><Link to="/account" className="nav-button blue">Account</Link></li>
+        )}
+        {!token ? (
+          <>
+            <li><Link to="/login" className="nav-button green">Login</Link></li>
+            <li><Link to="/register" className="nav-button green">Register</Link></li>
+          </>
+        ) : (
+          <li><button onClick={handleLogout} className="nav-button red">Logout</button></li>
+        )}
+      </ul>
     </nav>
   );
 };
