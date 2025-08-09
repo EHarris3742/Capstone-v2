@@ -1,0 +1,9 @@
+
+.account { max-width: 1000px; margin: 24px auto; padding: 0 12px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.mini-card { background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+.mini-card img { width: 100%; height: 160px; object-fit: cover; }
+.mini-card .meta { padding: 10px; display: grid; gap: 6px; }
+.mini-card .sub { font-size: 0.85rem; color: #666; }
+.mini-card button { padding: 6px 10px; border: none; background: #e74c3c; color: white; border-radius: 8px; cursor: pointer; }
+.mini-card button:hover { opacity: 0.9; }

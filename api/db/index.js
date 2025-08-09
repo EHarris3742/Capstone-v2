@@ -1,4 +1,4 @@
-require("dotenv").config(); // ⬅️ Load env variables from .env
+require("dotenv").config(); 
 const pg = require("pg");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");

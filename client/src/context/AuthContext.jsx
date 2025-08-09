@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         setUser(data);
       } else {
-        logout(); // invalid token
+        logout(); 
       }
     } catch (err) {
       console.error("Auth fetch failed", err);

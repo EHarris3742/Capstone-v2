@@ -6,6 +6,10 @@ const { client } = require("./db");
 
 const usersRouter = require("./routes/users");
 const gamesRouter = require("./routes/games");
+const wishlistRouter = require("./routes/wishlist");
+const collectionRouter = require("./routes/collection");
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -14,6 +18,8 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/users", usersRouter);
 app.use("/api/games", gamesRouter);
+app.use("/api/wishlist", wishlistRouter);
+app.use("/api/collection", collectionRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to The Game Closet API");

@@ -9,7 +9,7 @@ const NavBar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // optional: go home after logout
+    navigate("/"); 
   };
 
   return (
