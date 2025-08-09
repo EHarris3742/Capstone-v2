@@ -1,36 +1,40 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const eazy = require("morgan"); // ✅ aliasing morgan as "eazy"
+const morgan = require("morgan");
+const { client } = require("./db");
 
-const { client, seed } = require("./db");
+const usersRouter = require("./routes/users");
 const gamesRouter = require("./routes/games");
-const usersRouter = require('./routes/users');
 
-app.use(eazy("dev")); // ✅ use it like morgan, but called "eazy"
-
-app.use(express.json());
 app.use(cors());
-app.use('/api/users', usersRouter);
+app.use(express.json());
+app.use(morgan("dev"));
+
+// Routes
+app.use("/api/users", usersRouter);
+app.use("/api/games", gamesRouter);
+
 app.get("/", (req, res) => {
-  res.send("Welcome to the Game Closet API!");
+  res.send("Welcome to The Game Closet API");
 });
 
-app.use("/api/games", gamesRouter);
+// Central error handler
+app.use((err, req, res, next) => {
+  console.error("❌ Error:", err);
+  res.status(err.status || 500).send({ error: err.message || "Server error" });
+});
 
 const init = async () => {
   try {
     await client.connect();
-    console.log("🗄️  Connected to database");
-
-    await seed();
-
+    console.log("Connected to database");
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(`🎧 Eazy API running on port ${PORT} 🎮🔥`);
+      console.log(`Server is listening on port ${PORT}`);
     });
   } catch (err) {
-    console.error("❌ Initialization error:", err);
+    console.error("Startup error:", err);
   }
 };
 

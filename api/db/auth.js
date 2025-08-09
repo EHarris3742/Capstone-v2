@@ -1,37 +1,48 @@
-const pg = require('pg');
+
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://eazy@localhost/gamesdb');
-const JWT_SECRET = process.env.JWT_SECRET || 'eazy_secret';
+// Database client setup
+const { client } = require('./index');
 
-// Create user
+const JWT_SECRET = process.env.JWT_SECRET || 'eazy_secret';
+// 🔐 Create new user
 const createUser = async (user) => {
   if (!user.username.trim() || !user.password.trim()) {
     throw Error('Must provide username and password');
   }
 
   const hashed = await bcrypt.hash(user.password, 10);
+  const id = uuidv4();
 
   const SQL = `
     INSERT INTO users(id, username, password, is_admin)
     VALUES ($1, $2, $3, $4)
     RETURNING id, username, is_admin;
   `;
-  const response = await client.query(SQL, [uuidv4(), user.username, hashed, user.is_admin || false]);
+
+  const response = await client.query(SQL, [
+    id,
+    user.username,
+    hashed,
+    user.is_admin || false
+  ]);
+
   return response.rows[0];
 };
 
-// Login
+// 🔐 Authenticate login
 const authenticate = async ({ username, password }) => {
   const SQL = `
     SELECT id, password
     FROM users
     WHERE username = $1
   `;
+
   const response = await client.query(SQL, [username]);
   const user = response.rows[0];
+
   if (!user) {
     const error = Error('Invalid username');
     error.status = 401;
@@ -49,19 +60,22 @@ const authenticate = async ({ username, password }) => {
   return { token };
 };
 
-// Verify token
+// 🔐 Get user from JWT token
 const findUserByToken = async (token) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
+
     const SQL = `
       SELECT id, username, is_admin
       FROM users
       WHERE id = $1
     `;
+
     const response = await client.query(SQL, [payload.id]);
     if (!response.rows.length) {
       throw Error('User not found');
     }
+
     return response.rows[0];
   } catch (err) {
     const error = Error('Bad token');

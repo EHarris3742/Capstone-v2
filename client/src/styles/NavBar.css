@@ -43,3 +43,17 @@
 .nav-links li a:hover {
   color: #f76c6c;
 }
+
+.logout-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.logout-button:hover {
+  color: #f76c6c; /* or whatever your hover color is */
+}

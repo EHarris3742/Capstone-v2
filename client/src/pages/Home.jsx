@@ -7,15 +7,18 @@ export default function Home() {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/games");
-        const data = await response.json();
-        setGames(data);
-      } catch (err) {
-        console.error("Failed to fetch games:", err);
+      const response = await fetch("http://localhost:3000/api/games"); 
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status} ${response.statusText}: ${text}`);
       }
-    };
-
-    fetchGames();
+      const data = await response.json();
+      setGames(data);
+    } catch (err) {
+      console.error("Failed to fetch games:", err);
+    }
+  };
+  fetchGames();
   }, []);
 
   return (
